@@ -4,6 +4,13 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>StefanStolz.UnitTestHelpers</PackageId>
+        <Authors>Stefan Stolz</Authors>
+        <Description>Some Helper Routines that may be useful in Unit Tests</Description>
+        <PackageProjectUrl>https://github.com/StefanStolz/dotNetUnitTestHelpers</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/StefanStolz/dotNetUnitTestHelpers</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
 </Project>
