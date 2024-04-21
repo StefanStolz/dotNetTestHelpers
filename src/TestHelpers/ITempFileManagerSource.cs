@@ -1,4 +1,4 @@
-﻿namespace UnitTestHelpers;
+﻿namespace TestHelpers;
 
 public interface ITempFileManagerSource
 {

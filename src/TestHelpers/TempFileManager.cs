@@ -1,4 +1,6 @@
-﻿namespace UnitTestHelpers;
+﻿using TestHelpers;
+
+namespace UnitTestHelpers;
 
 public sealed class TempFileManager : IDisposable
 {
