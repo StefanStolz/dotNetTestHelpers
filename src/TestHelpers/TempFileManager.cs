@@ -1,12 +1,9 @@
-﻿using TestHelpers;
-
-namespace UnitTestHelpers;
+﻿namespace TestHelpers;
 
 public sealed class TempFileManager : IDisposable
 {
-    private readonly List<TempDirectoryManager> directories = new List<TempDirectoryManager>();
+    private readonly List<TempDirectoryManager> directories = new();
     private readonly ITempFileManagerSource source;
-    private bool disposed;
 
     public TempFileManager(ITempFileManagerSource source)
     {
@@ -22,8 +19,7 @@ public sealed class TempFileManager : IDisposable
 
     public void Dispose()
     {
-        this.Dispose(true);
-        GC.SuppressFinalize(this);
+        this.Cleanup();
     }
 
     /// <summary>
@@ -35,10 +31,10 @@ public sealed class TempFileManager : IDisposable
         var td = new TempDirectoryManager(Path.GetTempPath());
 
         var fileName = td.GetPath(this.source.FileName);
-        using (var inputStream = this.source.GetDataStream()) {
-            using (var outputStream = File.OpenWrite(fileName)) {
-                inputStream.CopyTo(outputStream);
-            }
+        using (var inputStream = this.source.GetDataStream())
+        using (var outputStream = File.OpenWrite(fileName))
+        {
+            inputStream.CopyTo(outputStream);
         }
 
         this.directories.Add(td);
@@ -47,26 +43,18 @@ public sealed class TempFileManager : IDisposable
 
     public void Cleanup()
     {
-        foreach (var tempDirectory in this.directories) {
-            try {
+        foreach (var tempDirectory in this.directories)
+        {
+            try
+            {
                 tempDirectory.Dispose();
             }
-            catch (Exception) {
+            catch (Exception)
+            {
                 // general catch is intented
             }
         }
 
         this.directories.Clear();
-    }
-
-    private void Dispose(bool disposing)
-    {
-        if (!this.disposed) {
-            if (disposing) {
-                this.Cleanup();
-            }
-
-            this.disposed = true;
-        }
     }
 }
