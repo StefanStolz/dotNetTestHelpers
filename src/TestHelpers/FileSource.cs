@@ -1,4 +1,4 @@
-﻿namespace TestHelpers;
+﻿namespace StefanStolz.TestHelpers;
 
 public class FileSource : ITempFileManagerSource
 {

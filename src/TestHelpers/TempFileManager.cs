@@ -1,4 +1,4 @@
-﻿namespace TestHelpers;
+﻿namespace StefanStolz.TestHelpers;
 
 public sealed class TempFileManager : IDisposable
 {
@@ -13,7 +13,7 @@ public sealed class TempFileManager : IDisposable
     public TempFileManager(string sourceFile)
     {
         if (sourceFile == null) throw new ArgumentNullException(nameof(sourceFile));
-        if (!File.Exists(sourceFile)) throw new FileNotFoundException("Sourcefile not found", sourceFile);
+        if (!File.Exists(sourceFile)) throw new FileNotFoundException("SourceFile not found", sourceFile);
         this.source = new FileSource(sourceFile);
     }
 
@@ -26,7 +26,7 @@ public sealed class TempFileManager : IDisposable
     /// Creates a duplicate File in a temporary Directory and returns the Path to the File.
     /// </summary>
     /// <returns>The Path to the file</returns>
-    public string CreateDuplicate()
+    public string CreateTempVersionOfFile()
     {
         var td = new TempDirectoryManager(Path.GetTempPath());
 
@@ -41,7 +41,7 @@ public sealed class TempFileManager : IDisposable
         return fileName;
     }
 
-    public void Cleanup()
+    private void Cleanup()
     {
         foreach (var tempDirectory in this.directories)
         {

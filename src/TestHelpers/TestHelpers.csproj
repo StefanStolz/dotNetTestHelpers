@@ -7,10 +7,14 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>StefanStolz.UnitTestHelpers</PackageId>
         <Authors>Stefan Stolz</Authors>
-        <Description>Some Helper Routines that may be useful in Unit Tests</Description>
-        <PackageProjectUrl>https://github.com/StefanStolz/dotNetUnitTestHelpers</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/StefanStolz/dotNetUnitTestHelpers</RepositoryUrl>
+        <Description>Some Helper Routines that may be useful in Tests</Description>
+        <PackageProjectUrl>https://github.com/StefanStolz/dotNetTestHelpers</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/StefanStolz/dotNetTestHelpers</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <AssemblyName>StefanStolz.TestHelpers</AssemblyName>
+        <RootNamespace>StefanStolz.TestHelpers</RootNamespace>
+        <Version>0.1.0</Version>
+        <Product>TestHelpers</Product>
     </PropertyGroup>
 
 </Project>
