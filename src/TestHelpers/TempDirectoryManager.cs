@@ -4,7 +4,8 @@ public sealed class TempDirectoryManager : IDisposable
 {
     public TempDirectoryManager()
         : this(Path.GetTempPath())
-    { }
+    {
+    }
 
     public TempDirectoryManager(string basePath)
     {
@@ -26,7 +27,25 @@ public sealed class TempDirectoryManager : IDisposable
 
     private void Cleanup()
     {
-        Directory.Delete(this.WorkingPath, true);
+        Retry(() => { Directory.Delete(this.WorkingPath, true); }, numberOfTries: 5);
+    }
+
+    private static void Retry(Action action, int numberOfTries)
+    {
+        for (int i = 0; i < numberOfTries-1; i++)
+        {
+            try
+            {
+                action();
+                return;
+            }
+            catch (IOException)
+            {
+                Thread.Sleep(500);
+            }
+        }
+
+        action();
     }
 
     /// <summary>
