@@ -10,9 +10,9 @@ public class EmbeddedResourceFileSource : ITempFileManagerSource
 
     public EmbeddedResourceFileSource(Assembly assembly, string name, string fileNamespace)
     {
-        this.assembly = assembly;
-        this.name = name;
-        this.fileNamespace = fileNamespace;
+        this.assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
+        this.name = name ?? throw new ArgumentNullException(nameof(name));
+        this.fileNamespace = fileNamespace ?? throw new ArgumentNullException(nameof(fileNamespace));
         this.FileName = name;
     }
 

@@ -9,6 +9,9 @@ public sealed class TempDirectoryManager : IDisposable
 
     public TempDirectoryManager(string basePath)
     {
+        if (basePath == null)
+            throw new ArgumentNullException(nameof(basePath));
+
         this.WorkingPath = Path.Combine(basePath, "tmp" + DateTime.Now.Ticks.ToString("X"));
         Directory.CreateDirectory(this.WorkingPath);
     }

@@ -6,9 +6,9 @@ public class StreamSource : ITempFileManagerSource
 
     public StreamSource(string name, Func<Stream> openMethod)
     {
-        this.openMethod = openMethod;
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
+        this.openMethod = openMethod ?? throw new ArgumentNullException(nameof(openMethod));
         this.FileName = name;
     }
 

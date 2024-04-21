@@ -2,7 +2,7 @@
 
 public sealed class TempFileManager : IDisposable
 {
-    private readonly List<TempDirectoryManager> directories = new();
+    private readonly List<TempDirectoryManager> tempDirectories = new();
     private readonly ITempFileManagerSource source;
 
     public TempFileManager(ITempFileManagerSource source)
@@ -28,22 +28,23 @@ public sealed class TempFileManager : IDisposable
     /// <returns>The Path to the file</returns>
     public string CreateTempVersionOfFile()
     {
-        var td = new TempDirectoryManager(Path.GetTempPath());
+        var tempDirectoryManager = new TempDirectoryManager(Path.GetTempPath());
 
-        var fileName = td.GetPath(this.source.FileName);
+        var fileName = tempDirectoryManager.GetPath(this.source.FileName);
         using (var inputStream = this.source.GetDataStream())
         using (var outputStream = File.OpenWrite(fileName))
         {
             inputStream.CopyTo(outputStream);
         }
 
-        this.directories.Add(td);
+        this.tempDirectories.Add(tempDirectoryManager);
+
         return fileName;
     }
 
     private void Cleanup()
     {
-        foreach (var tempDirectory in this.directories)
+        foreach (var tempDirectory in this.tempDirectories)
         {
             try
             {
@@ -55,6 +56,6 @@ public sealed class TempFileManager : IDisposable
             }
         }
 
-        this.directories.Clear();
+        this.tempDirectories.Clear();
     }
 }

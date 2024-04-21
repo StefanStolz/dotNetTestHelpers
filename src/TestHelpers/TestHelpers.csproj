@@ -1,19 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFrameworks>net8.0;net6.0;netstandard2.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageId>StefanStolz.UnitTestHelpers</PackageId>
+        <PackageId>StefanStolz.TestHelpers</PackageId>
         <Authors>Stefan Stolz</Authors>
+        <LangVersion>latest</LangVersion>
         <Description>Some Helper Routines that may be useful in Tests</Description>
         <PackageProjectUrl>https://github.com/StefanStolz/dotNetTestHelpers</PackageProjectUrl>
         <RepositoryUrl>https://github.com/StefanStolz/dotNetTestHelpers</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <AssemblyName>StefanStolz.TestHelpers</AssemblyName>
         <RootNamespace>StefanStolz.TestHelpers</RootNamespace>
-        <Version>0.1.0</Version>
+        <Version>0.1.2</Version>
         <Product>TestHelpers</Product>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>

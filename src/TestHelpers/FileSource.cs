@@ -6,7 +6,7 @@ public class FileSource : ITempFileManagerSource
 
     public FileSource(string filePath)
     {
-        this.filePath = filePath;
+        this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
     }
 
     public Stream GetDataStream()
