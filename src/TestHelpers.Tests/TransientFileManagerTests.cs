@@ -24,4 +24,23 @@ public class TransientFileManagerTests
 
         Assert.That(File.Exists(path), Is.False);
     }
+
+    [Test]
+    public void TempFileFromEmbeddedResourceWithThisAssembly()
+    {
+        var source = new StreamSource(Path.GetFileName(
+                ThisAssembly.Constants.Assets.SomeTextFile),
+            ThisAssembly.Resources.Assets.SomeTextFile.GetStream);
+
+        string path;
+        using (var sut = new TransientFileManager(source))
+        {
+            path = sut.CreateTempVersionOfFile();
+
+            Assert.That(File.Exists(path), Is.True);
+        }
+
+        Assert.That(File.Exists(path), Is.False);
+
+    }
 }
