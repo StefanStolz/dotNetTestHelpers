@@ -1,6 +1,6 @@
 ﻿namespace StefanStolz.TestHelpers;
 
-public class FileSource : ITempFileManagerSource
+public class FileSource : ITransientFileManagerSource
 {
     private readonly string filePath;
 

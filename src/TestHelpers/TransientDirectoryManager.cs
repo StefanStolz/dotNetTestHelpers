@@ -1,13 +1,13 @@
 ﻿namespace StefanStolz.TestHelpers;
 
-public sealed class TempDirectoryManager : IDisposable
+public sealed class TransientDirectoryManager : IDisposable
 {
-    public TempDirectoryManager()
+    public TransientDirectoryManager()
         : this(Path.GetTempPath())
     {
     }
 
-    public TempDirectoryManager(string basePath)
+    public TransientDirectoryManager(string basePath)
     {
         if (basePath == null)
             throw new ArgumentNullException(nameof(basePath));
@@ -16,7 +16,7 @@ public sealed class TempDirectoryManager : IDisposable
         Directory.CreateDirectory(this.WorkingPath);
     }
 
-    public string GetPath(string fileName)
+    public string CreateTransientPath(string fileName)
     {
         if (string.IsNullOrWhiteSpace(fileName))
             throw new ArgumentException("Value must not be empty", nameof(fileName));
@@ -35,7 +35,7 @@ public sealed class TempDirectoryManager : IDisposable
 
     private static void Retry(Action action, int numberOfTries)
     {
-        for (int i = 0; i < numberOfTries-1; i++)
+        for (int i = 0; i < numberOfTries - 1; i++)
         {
             try
             {

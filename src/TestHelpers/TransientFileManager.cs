@@ -1,16 +1,16 @@
 ﻿namespace StefanStolz.TestHelpers;
 
-public sealed class TempFileManager : IDisposable
+public sealed class TransientFileManager : IDisposable
 {
-    private readonly List<TempDirectoryManager> tempDirectories = new();
-    private readonly ITempFileManagerSource source;
+    private readonly List<TransientDirectoryManager> tempDirectories = new();
+    private readonly ITransientFileManagerSource source;
 
-    public TempFileManager(ITempFileManagerSource source)
+    public TransientFileManager(ITransientFileManagerSource source)
     {
         this.source = source ?? throw new ArgumentNullException(nameof(source));
     }
 
-    public TempFileManager(string sourceFile)
+    public TransientFileManager(string sourceFile)
     {
         if (sourceFile == null) throw new ArgumentNullException(nameof(sourceFile));
         if (!File.Exists(sourceFile)) throw new FileNotFoundException("SourceFile not found", sourceFile);
@@ -28,9 +28,9 @@ public sealed class TempFileManager : IDisposable
     /// <returns>The Path to the file</returns>
     public string CreateTempVersionOfFile()
     {
-        var tempDirectoryManager = new TempDirectoryManager(Path.GetTempPath());
+        var tempDirectoryManager = new TransientDirectoryManager(Path.GetTempPath());
 
-        var fileName = tempDirectoryManager.GetPath(this.source.FileName);
+        var fileName = tempDirectoryManager.CreateTransientPath(this.source.FileName);
         using (var inputStream = this.source.GetDataStream())
         using (var outputStream = File.OpenWrite(fileName))
         {

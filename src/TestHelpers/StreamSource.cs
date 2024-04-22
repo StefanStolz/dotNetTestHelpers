@@ -1,6 +1,6 @@
 namespace StefanStolz.TestHelpers;
 
-public class StreamSource : ITempFileManagerSource
+public class StreamSource : ITransientFileManagerSource
 {
     private readonly Func<Stream> openMethod;
 

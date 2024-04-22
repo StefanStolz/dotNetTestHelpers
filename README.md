@@ -3,10 +3,10 @@
 
 Various helper classes to support the testing of code.
 
-## TempDirectoryManager
+## TransientDirectoryManager
 
 Manages a temporary directory that is deleted at the end of the tests.
 
-## TempFileManager
+## TransientFileManager
 
-Creates temporary duplicates of a file. The source of the content can be other files, streams or EmbeddedResources.
+Creates transient duplicates of a file. The source of the content can be other files, streams or EmbeddedResources.

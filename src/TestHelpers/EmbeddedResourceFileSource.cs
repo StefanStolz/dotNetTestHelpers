@@ -2,7 +2,7 @@ using System.Reflection;
 
 namespace StefanStolz.TestHelpers;
 
-public class EmbeddedResourceFileSource : ITempFileManagerSource
+public class EmbeddedResourceFileSource : ITransientFileManagerSource
 {
     private readonly Assembly assembly;
     private readonly string name;
