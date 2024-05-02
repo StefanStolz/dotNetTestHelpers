@@ -1,48 +1,47 @@
-﻿namespace StefanStolz.TestHelpers.Threading
+﻿namespace StefanStolz.TestHelpers.Threading;
+
+internal sealed class FakeUiSynchronisationContext : SynchronizationContext
 {
-    public sealed class FakeUiSynchronisationContext : SynchronizationContext
+    private readonly ThreadWorker threadWorker;
+
+    public FakeUiSynchronisationContext(ThreadWorker threadWorker, bool setAsSynchronisationContextInThread = true)
     {
-        private readonly ThreadWorker threadWorker;
+        this.threadWorker = threadWorker;
 
-        public FakeUiSynchronisationContext(ThreadWorker threadWorker, bool setAsSynchronisationContextInThread = true)
-        {
-            this.threadWorker = threadWorker;
-
-            if (setAsSynchronisationContextInThread) {
-                this.threadWorker.Post(() => SetSynchronizationContext(this));
-            }
+        if (setAsSynchronisationContextInThread) {
+            this.threadWorker.Post(() => SetSynchronizationContext(this));
         }
+    }
 
-        public FakeUiSynchronisationContext(bool setAsSynchronisationContextInThread = true)
-            : this(new ThreadWorker(), setAsSynchronisationContextInThread)
-        { }
+    public FakeUiSynchronisationContext(bool setAsSynchronisationContextInThread = true)
+        : this(new ThreadWorker(), setAsSynchronisationContextInThread)
+    { }
 
-        public override void Post(SendOrPostCallback d, object? state)
-        {
-            this.threadWorker.Post(() => d(state));
-        }
+    public override void Post(SendOrPostCallback d, object? state)
+    {
+        this.threadWorker.Post(() => d(state));
+    }
 
-        public override void Send(SendOrPostCallback d, object? state)
-        {
-            using var mre = new ManualResetEvent(false);
-            this.threadWorker.Post(
-                () =>
-                {
-                    try {
-                        d(state);
-                    }
-                    finally {
-                        // ReSharper disable once AccessToDisposedClosure
-                        mre.Set();
-                    }
-                });
+    public override void Send(SendOrPostCallback d, object? state)
+    {
+        using var mre = new ManualResetEvent(false);
+        this.threadWorker.Post(
+            () =>
+            {
+                try {
+                    d(state);
+                }
+                finally {
+                    // ReSharper disable once AccessToDisposedClosure
+                    mre.Set();
+                }
+            });
 
-            mre.WaitOne();
-        }
+        mre.WaitOne();
+    }
 
-        public override SynchronizationContext CreateCopy()
-        {
-            return new FakeUiSynchronisationContext(this.threadWorker);
-        }
+    public override SynchronizationContext CreateCopy()
+    {
+        return new FakeUiSynchronisationContext(this.threadWorker);
     }
 }
