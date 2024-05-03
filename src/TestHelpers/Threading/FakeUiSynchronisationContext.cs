@@ -4,18 +4,13 @@ internal sealed class FakeUiSynchronisationContext : SynchronizationContext
 {
     private readonly ThreadWorker threadWorker;
 
-    public FakeUiSynchronisationContext(ThreadWorker threadWorker, bool setAsSynchronisationContextInThread = true)
+    public FakeUiSynchronisationContext(ThreadWorker threadWorker)
     {
         this.threadWorker = threadWorker;
 
-        if (setAsSynchronisationContextInThread) {
-            this.threadWorker.Post(() => SetSynchronizationContext(this));
-        }
+        this.threadWorker.Post(() => SetSynchronizationContext(this));
     }
 
-    public FakeUiSynchronisationContext(bool setAsSynchronisationContextInThread = true)
-        : this(new ThreadWorker(), setAsSynchronisationContextInThread)
-    { }
 
     public override void Post(SendOrPostCallback d, object? state)
     {
@@ -28,10 +23,12 @@ internal sealed class FakeUiSynchronisationContext : SynchronizationContext
         this.threadWorker.Post(
             () =>
             {
-                try {
+                try
+                {
                     d(state);
                 }
-                finally {
+                finally
+                {
                     // ReSharper disable once AccessToDisposedClosure
                     mre.Set();
                 }

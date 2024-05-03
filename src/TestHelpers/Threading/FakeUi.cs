@@ -29,7 +29,7 @@ public sealed class FakeUi : IDisposable
     {
         this.synchronizationContextHandling = synchronizationContextHandling;
         this.threadWorker = new ThreadWorker(this.OnThreadException);
-        this.synchronisationContext = new FakeUiSynchronisationContext(this.threadWorker, true);
+        this.synchronisationContext = new FakeUiSynchronisationContext(this.threadWorker);
 
         this.originalSynchronizationContext = SynchronizationContext.Current;
         if (synchronizationContextHandling == FakeUiSynchronizationContextHandling.SetSynchronizationContext ||

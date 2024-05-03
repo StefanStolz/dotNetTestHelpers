@@ -1,3 +1,4 @@
+using FluentAssertions;
 using StefanStolz.TestHelpers.Threading;
 
 namespace StefanStolz.TestHelpers.Tests.Threading;
@@ -34,5 +35,22 @@ public class FakeUiTests
         var exception =Assert.Throws<InvalidOperationException>(() => exceptionHistory.Throw());
 
         Assert.That(exception.Message, Is.EqualTo("Some Exception"));
+    }
+
+    [Test]
+    public void MultipleExceptionsAreThrownAsAggregateException()
+    {
+        using var sut = new FakeUi();
+
+        sut.SynchronizationContext.Send(_ => throw new InvalidOperationException("Some Exception"), null);
+        sut.SynchronizationContext.Send(_ => throw new ArgumentException("Some ArgumentException"), null);
+
+        var exceptionHistory = sut.TakeOverExceptions();
+
+        Assert.That(exceptionHistory.Count, Is.EqualTo(2));
+        exceptionHistory[0].Should().BeOfType<InvalidOperationException>();
+        exceptionHistory[1].Should().BeOfType<ArgumentException>();
+
+        Assert.Throws<AggregateException>(() => exceptionHistory.Throw());
     }
 }
