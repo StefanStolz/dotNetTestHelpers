@@ -10,3 +10,7 @@ Manages a temporary directory that is deleted at the end of the tests.
 ## TransientFileManager
 
 Creates transient duplicates of a file. The source of the content can be other files, streams or EmbeddedResources.
+
+## FakeUI
+
+Creates and installs a SynchronizationContext that simulates an User Interface
