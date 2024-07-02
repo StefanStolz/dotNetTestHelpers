@@ -80,4 +80,22 @@ internal sealed class ThreadWorker : IDisposable
             this.exceptionHandler(exception);
         }
     }
+
+    public void Send(Action action)
+    {
+        using var mre = new ManualResetEvent(false);
+        this.actions.Add(() =>
+        {
+            try
+            {
+                action();
+            }
+            finally
+            {
+                mre.Set();
+            }
+        });
+
+       mre.WaitOne();
+    }
 }

@@ -14,10 +14,7 @@ public class FakeUiTests
 
         int i = 0;
 
-        sut.SynchronizationContext.Send(_ =>
-        {
-            i++;
-        }, null);
+        sut.SynchronizationContext.Send(_ => { i++; }, null);
 
         Assert.That(i, Is.EqualTo(1));
     }
@@ -32,7 +29,7 @@ public class FakeUiTests
         var exceptionHistory = sut.TakeOverExceptions();
 
         Assert.That(exceptionHistory.Count, Is.EqualTo(1));
-        var exception =Assert.Throws<InvalidOperationException>(() => exceptionHistory.Throw());
+        var exception = Assert.Throws<InvalidOperationException>(() => exceptionHistory.Throw());
 
         Assert.That(exception.Message, Is.EqualTo("Some Exception"));
     }

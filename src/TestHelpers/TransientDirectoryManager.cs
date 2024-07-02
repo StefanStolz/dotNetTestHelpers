@@ -42,9 +42,15 @@ public sealed class TransientDirectoryManager : IDisposable
                 action();
                 return;
             }
-            catch (IOException)
+            catch (Exception ex)
             {
-                Thread.Sleep(500);
+                switch (ex)
+                {
+                    case IOException:
+                    case UnauthorizedAccessException:
+                        Thread.Sleep(500 + (i + 1));
+                        break;
+                }
             }
         }
 

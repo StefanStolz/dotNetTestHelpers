@@ -11,7 +11,6 @@ internal sealed class FakeUiSynchronisationContext : SynchronizationContext
         this.threadWorker.Post(() => SetSynchronizationContext(this));
     }
 
-
     public override void Post(SendOrPostCallback d, object? state)
     {
         this.threadWorker.Post(() => d(state));
@@ -19,22 +18,7 @@ internal sealed class FakeUiSynchronisationContext : SynchronizationContext
 
     public override void Send(SendOrPostCallback d, object? state)
     {
-        using var mre = new ManualResetEvent(false);
-        this.threadWorker.Post(
-            () =>
-            {
-                try
-                {
-                    d(state);
-                }
-                finally
-                {
-                    // ReSharper disable once AccessToDisposedClosure
-                    mre.Set();
-                }
-            });
-
-        mre.WaitOne();
+        this.threadWorker.Send(() => d(state));
     }
 
     public override SynchronizationContext CreateCopy()
