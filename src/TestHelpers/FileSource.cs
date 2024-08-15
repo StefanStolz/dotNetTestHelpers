@@ -1,18 +1,19 @@
-﻿namespace StefanStolz.TestHelpers;
-
-public class FileSource : ITransientFileManagerSource
+﻿namespace StefanStolz.TestHelpers
 {
-    private readonly string filePath;
-
-    public FileSource(string filePath)
+    public class FileSource : ITransientFileManagerSource
     {
-        this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-    }
+        private readonly string filePath;
 
-    public Stream GetDataStream()
-    {
-        return File.OpenRead(this.filePath);
-    }
+        public FileSource(string filePath)
+        {
+            this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
+        }
 
-    public string FileName => Path.GetFileName(this.filePath);
+        public Stream GetDataStream()
+        {
+            return File.OpenRead(this.filePath);
+        }
+
+        public string FileName => Path.GetFileName(this.filePath);
+    }
 }

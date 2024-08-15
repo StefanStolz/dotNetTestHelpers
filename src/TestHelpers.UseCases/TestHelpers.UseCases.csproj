@@ -16,12 +16,12 @@
         <PackageReference Include="NUnit.Analyzers" Version="3.9.0"/>
         <PackageReference Include="NUnit3TestAdapter" Version="4.5.0"/>
         <PackageReference Include="ThisAssembly.Constants" Version="1.4.3">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="ThisAssembly.Resources" Version="1.4.3">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
 
@@ -30,21 +30,21 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Assets\SomeEmbeddedTextFile.txt" />
+        <EmbeddedResource Include="Assets\SomeEmbeddedTextFile.txt"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="Assets\SomeContentTextFile.txt">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+        <Content Include="Assets\SomeContentTextFile.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
+        <ProjectReference Include="..\TestHelpers\TestHelpers.csproj"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-        <FileConstant Include="@(Content)" Visible="False" />
-        <FileConstant Include="@(EmbeddedResource)" Visible="False" />
+        <FileConstant Include="@(Content)" Visible="False"/>
+        <FileConstant Include="@(EmbeddedResource)" Visible="False"/>
     </ItemGroup>
 </Project>

@@ -14,12 +14,12 @@
         <RepositoryType>git</RepositoryType>
         <AssemblyName>StefanStolz.TestHelpers</AssemblyName>
         <RootNamespace>StefanStolz.TestHelpers</RootNamespace>
-        <Version>0.1.7</Version>
+        <Version>0.1.8</Version>
         <Product>TestHelpers</Product>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicenseFile>LICENSE</PackageLicenseFile> 
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -31,6 +31,6 @@
             <Pack>True</Pack>
             <PackagePath>\</PackagePath>
         </None>
-    </ItemGroup> 
+    </ItemGroup>
 
 </Project>

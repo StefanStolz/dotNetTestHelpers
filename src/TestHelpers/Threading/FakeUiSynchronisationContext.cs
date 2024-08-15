@@ -1,28 +1,29 @@
-﻿namespace StefanStolz.TestHelpers.Threading;
-
-internal sealed class FakeUiSynchronisationContext : SynchronizationContext
+﻿namespace StefanStolz.TestHelpers.Threading
 {
-    private readonly ThreadWorker threadWorker;
-
-    public FakeUiSynchronisationContext(ThreadWorker threadWorker)
+    internal sealed class FakeUiSynchronisationContext : SynchronizationContext
     {
-        this.threadWorker = threadWorker;
+        private readonly ThreadWorker threadWorker;
 
-        this.threadWorker.Post(() => SetSynchronizationContext(this));
-    }
+        public FakeUiSynchronisationContext(ThreadWorker threadWorker)
+        {
+            this.threadWorker = threadWorker;
 
-    public override void Post(SendOrPostCallback d, object? state)
-    {
-        this.threadWorker.Post(() => d(state));
-    }
+            this.threadWorker.Post(() => SetSynchronizationContext(this));
+        }
 
-    public override void Send(SendOrPostCallback d, object? state)
-    {
-        this.threadWorker.Send(() => d(state));
-    }
+        public override void Post(SendOrPostCallback d, object? state)
+        {
+            this.threadWorker.Post(() => d(state));
+        }
 
-    public override SynchronizationContext CreateCopy()
-    {
-        return new FakeUiSynchronisationContext(this.threadWorker);
+        public override void Send(SendOrPostCallback d, object? state)
+        {
+            this.threadWorker.Send(() => d(state));
+        }
+
+        public override SynchronizationContext CreateCopy()
+        {
+            return new FakeUiSynchronisationContext(this.threadWorker);
+        }
     }
 }

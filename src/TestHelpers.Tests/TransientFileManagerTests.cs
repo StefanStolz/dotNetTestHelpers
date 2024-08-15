@@ -1,46 +1,46 @@
 using System.Reflection;
 
-namespace StefanStolz.TestHelpers.Tests;
-
-[TestFixture]
-public class TransientFileManagerTests
+namespace StefanStolz.TestHelpers.Tests
 {
-    [Test]
-    public void TempFileFromEmbeddedResource()
+    [TestFixture]
+    public class TransientFileManagerTests
     {
-        var embeddedResourceFileSource =
-            new EmbeddedResourceFileSource(
-                Assembly.GetExecutingAssembly(),
-                "SomeTextFile.txt",
-                "StefanStolz.TestHelpers.Tests.Assets");
-
-        string path;
-        using (var sut = new TransientFileManager(embeddedResourceFileSource))
+        [Test]
+        public void TempFileFromEmbeddedResource()
         {
-            path = sut.CreateTempVersionOfFile();
+            EmbeddedResourceFileSource embeddedResourceFileSource =
+                new EmbeddedResourceFileSource(
+                    Assembly.GetExecutingAssembly(),
+                    "SomeTextFile.txt",
+                    "StefanStolz.TestHelpers.Tests.Assets");
 
-            Assert.That(File.Exists(path), Is.True);
+            string path;
+            using (TransientFileManager sut = new TransientFileManager(embeddedResourceFileSource))
+            {
+                path = sut.CreateTempVersionOfFile();
+
+                Assert.That(File.Exists(path), Is.True);
+            }
+
+            Assert.That(File.Exists(path), Is.False);
         }
 
-        Assert.That(File.Exists(path), Is.False);
-    }
-
-    [Test]
-    public void TempFileFromEmbeddedResourceWithThisAssembly()
-    {
-        var source = new StreamSource(Path.GetFileName(
-                ThisAssembly.Constants.Assets.SomeTextFile),
-            ThisAssembly.Resources.Assets.SomeTextFile.GetStream);
-
-        string path;
-        using (var sut = new TransientFileManager(source))
+        [Test]
+        public void TempFileFromEmbeddedResourceWithThisAssembly()
         {
-            path = sut.CreateTempVersionOfFile();
+            StreamSource source = new StreamSource(Path.GetFileName(
+                    ThisAssembly.Constants.Assets.SomeTextFile),
+                ThisAssembly.Resources.Assets.SomeTextFile.GetStream);
 
-            Assert.That(File.Exists(path), Is.True);
+            string path;
+            using (TransientFileManager sut = new TransientFileManager(source))
+            {
+                path = sut.CreateTempVersionOfFile();
+
+                Assert.That(File.Exists(path), Is.True);
+            }
+
+            Assert.That(File.Exists(path), Is.False);
         }
-
-        Assert.That(File.Exists(path), Is.False);
-
     }
 }

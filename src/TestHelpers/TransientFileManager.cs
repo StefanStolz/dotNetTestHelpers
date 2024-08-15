@@ -1,61 +1,70 @@
-﻿namespace StefanStolz.TestHelpers;
-
-public sealed class TransientFileManager : IDisposable
+﻿namespace StefanStolz.TestHelpers
 {
-    private readonly List<TransientDirectoryManager> tempDirectories = new();
-    private readonly ITransientFileManagerSource source;
-
-    public TransientFileManager(ITransientFileManagerSource source)
+    public sealed class TransientFileManager : IDisposable
     {
-        this.source = source ?? throw new ArgumentNullException(nameof(source));
-    }
+        private readonly ITransientFileManagerSource source;
+        private readonly List<TransientDirectoryManager> tempDirectories = new();
 
-    public TransientFileManager(string sourceFile)
-    {
-        if (sourceFile == null) throw new ArgumentNullException(nameof(sourceFile));
-        if (!File.Exists(sourceFile)) throw new FileNotFoundException("SourceFile not found", sourceFile);
-        this.source = new FileSource(sourceFile);
-    }
-
-    public void Dispose()
-    {
-        this.Cleanup();
-    }
-
-    /// <summary>
-    /// Creates a duplicate File in a temporary Directory and returns the Path to the File.
-    /// </summary>
-    /// <returns>The Path to the file</returns>
-    public string CreateTempVersionOfFile()
-    {
-        var tempDirectoryManager = new TransientDirectoryManager(Path.GetTempPath());
-
-        var fileName = tempDirectoryManager.CreateTransientPath(this.source.FileName);
-        using (var inputStream = this.source.GetDataStream())
-        using (var outputStream = File.OpenWrite(fileName))
+        public TransientFileManager(ITransientFileManagerSource source)
         {
-            inputStream.CopyTo(outputStream);
+            this.source = source ?? throw new ArgumentNullException(nameof(source));
         }
 
-        this.tempDirectories.Add(tempDirectoryManager);
-
-        return fileName;
-    }
-
-    private void Cleanup()
-    {
-        foreach (var tempDirectory in this.tempDirectories)
+        public TransientFileManager(string sourceFile)
         {
-            try
+            if (sourceFile == null)
             {
-                tempDirectory.Dispose();
+                throw new ArgumentNullException(nameof(sourceFile));
             }
-            catch (Exception)
+
+            if (!File.Exists(sourceFile))
             {
-                // general catch is intented
+                throw new FileNotFoundException("SourceFile not found", sourceFile);
             }
+
+            this.source = new FileSource(sourceFile);
         }
 
-        this.tempDirectories.Clear();
+        public void Dispose()
+        {
+            this.Cleanup();
+        }
+
+        /// <summary>
+        ///     Creates a duplicate File in a temporary Directory and returns the Path to the File.
+        /// </summary>
+        /// <returns>The Path to the file</returns>
+        public string CreateTempVersionOfFile()
+        {
+            TransientDirectoryManager tempDirectoryManager = new TransientDirectoryManager(Path.GetTempPath());
+
+            string fileName = tempDirectoryManager.CreateTransientPath(this.source.FileName);
+            using (Stream inputStream = this.source.GetDataStream())
+            using (FileStream outputStream = File.OpenWrite(fileName))
+            {
+                inputStream.CopyTo(outputStream);
+            }
+
+            this.tempDirectories.Add(tempDirectoryManager);
+
+            return fileName;
+        }
+
+        private void Cleanup()
+        {
+            foreach (TransientDirectoryManager tempDirectory in this.tempDirectories)
+            {
+                try
+                {
+                    tempDirectory.Dispose();
+                }
+                catch (Exception)
+                {
+                    // general catch is intented
+                }
+            }
+
+            this.tempDirectories.Clear();
+        }
     }
 }

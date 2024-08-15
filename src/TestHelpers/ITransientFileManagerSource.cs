@@ -1,7 +1,8 @@
-﻿namespace StefanStolz.TestHelpers;
-
-public interface ITransientFileManagerSource
+﻿namespace StefanStolz.TestHelpers
 {
-    Stream GetDataStream();
-    string FileName { get; }
+    public interface ITransientFileManagerSource
+    {
+        string FileName { get; }
+        Stream GetDataStream();
+    }
 }

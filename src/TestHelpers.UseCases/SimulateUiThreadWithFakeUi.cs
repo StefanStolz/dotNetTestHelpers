@@ -1,9 +1,7 @@
-using StefanStolz.TestHelpers.Threading;
-
-namespace TestHelpers.UseCases;
-
-[TestFixture]
-public class SimulateUiThreadWithFakeUi
+namespace TestHelpers.UseCases
 {
-
+    [TestFixture]
+    public class SimulateUiThreadWithFakeUi
+    {
+    }
 }

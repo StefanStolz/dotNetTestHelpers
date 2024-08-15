@@ -1,6 +1,5 @@
 # dotNetTestHelpers
 
-
 Various helper classes to support the testing of code.
 
 ## TransientDirectoryManager
