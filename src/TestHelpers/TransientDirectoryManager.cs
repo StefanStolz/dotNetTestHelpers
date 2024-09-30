@@ -17,6 +17,11 @@
             }
 
             this.WorkingPath = Path.Combine(basePath, "tdm" + DateTime.Now.Ticks.ToString("X"));
+            while (Directory.Exists(this.WorkingPath))
+            {
+                this.WorkingPath = Path.Combine(basePath, "tdm" + DateTime.Now.Ticks.ToString("X"));
+            }
+
             Directory.CreateDirectory(this.WorkingPath);
         }
 

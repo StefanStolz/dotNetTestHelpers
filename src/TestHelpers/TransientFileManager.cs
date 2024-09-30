@@ -36,7 +36,7 @@
         /// <returns>The Path to the file</returns>
         public string CreateTempVersionOfFile()
         {
-            TransientDirectoryManager tempDirectoryManager = new TransientDirectoryManager(Path.GetTempPath());
+            var tempDirectoryManager = new TransientDirectoryManager(Path.GetTempPath());
 
             string fileName = tempDirectoryManager.CreateTransientPath(this.source.FileName);
             using (Stream inputStream = this.source.GetDataStream())
