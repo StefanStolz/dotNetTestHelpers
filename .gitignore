@@ -399,3 +399,8 @@ FodyWeavers.xsd
 
 # Mac Stuff
 .DS_Store
+
+# docfx
+
+doc/_site
+doc/api
