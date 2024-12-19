@@ -1,25 +1,24 @@
 using System.Text;
 
-namespace StefanStolz.TestHelpers
+namespace StefanStolz.TestHelpers;
+
+public class RandomNameGenerator
 {
-    public class RandomNameGenerator
+    private readonly Random random = new();
+
+    public string GetRandomName(int length)
     {
-        private readonly Random random = new();
+        StringBuilder result = new StringBuilder(length);
+        string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-        public string GetRandomName(int length)
+        for (int i = 0; i < length; i++)
         {
-            StringBuilder result = new StringBuilder(length);
-            string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-            for (int i = 0; i < length; i++)
-            {
-                int index = this.random.Next(characters.Length);
-                result.Append(characters[index]);
-            }
-
-            result.Append(DateTime.Now.Ticks.ToString("X8").TrimStart('0'));
-
-            return result.ToString();
+            int index = this.random.Next(characters.Length);
+            result.Append(characters[index]);
         }
+
+        result.Append(DateTime.Now.Ticks.ToString("X8").TrimStart('0'));
+
+        return result.ToString();
     }
 }

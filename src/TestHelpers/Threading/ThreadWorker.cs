@@ -1,105 +1,104 @@
 ﻿using System.Collections.Concurrent;
 
-namespace StefanStolz.TestHelpers.Threading
+namespace StefanStolz.TestHelpers.Threading;
+
+internal sealed class ThreadWorker : IDisposable
 {
-    internal sealed class ThreadWorker : IDisposable
+    private readonly BlockingCollection<Action> actions = new(new ConcurrentQueue<Action>());
+    private readonly CancellationTokenSource cts = new();
+    private readonly Action<Exception> exceptionHandler;
+    private readonly Thread workerThread;
+    private bool disposed;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ThreadWorker" /> class
+    ///     with a custom Exception-Handler
+    /// </summary>
+    /// <param name="exceptionHandler">The Custom Exception-Handler</param>
+    public ThreadWorker(Action<Exception> exceptionHandler)
     {
-        private readonly BlockingCollection<Action> actions = new(new ConcurrentQueue<Action>());
-        private readonly CancellationTokenSource cts = new();
-        private readonly Action<Exception> exceptionHandler;
-        private readonly Thread workerThread;
-        private bool disposed;
+        this.exceptionHandler = exceptionHandler;
+        this.workerThread = new Thread(this.Execute);
+        this.workerThread.IsBackground = true;
+        this.workerThread.Start();
+    }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ThreadWorker" /> class
-        ///     with a custom Exception-Handler
-        /// </summary>
-        /// <param name="exceptionHandler">The Custom Exception-Handler</param>
-        public ThreadWorker(Action<Exception> exceptionHandler)
+    /// <summary>
+    ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
+    public void Dispose()
+    {
+        if (!this.disposed)
         {
-            this.exceptionHandler = exceptionHandler;
-            this.workerThread = new Thread(this.Execute);
-            this.workerThread.IsBackground = true;
-            this.workerThread.Start();
+            this.cts.Cancel();
+            this.workerThread.Join(new TimeSpan(0, 1, 0));
+            this.cts.Dispose();
+
+            this.disposed = true;
+        }
+    }
+
+    /// <summary>
+    ///     Enqueues an Action to execute in the <see cref="ThreadWorker" />.
+    /// </summary>
+    /// <param name="action">The Action to execute</param>
+    /// <exception cref="ObjectDisposedException"></exception>
+    public void Post(Action action)
+    {
+        if (this.disposed)
+        {
+            throw new ObjectDisposedException(nameof(ThreadWorker));
         }
 
-        /// <summary>
-        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            if (!this.disposed)
-            {
-                this.cts.Cancel();
-                this.workerThread.Join(new TimeSpan(0, 1, 0));
-                this.cts.Dispose();
+        this.actions.Add(action);
+    }
 
-                this.disposed = true;
+    private void Execute()
+    {
+        CancellationToken token = this.cts.Token;
+
+        try
+        {
+            while (this.actions.Any() || !token.IsCancellationRequested)
+            {
+                Action action = this.actions.Take(token);
+
+                this.ExecuteAction(action);
             }
         }
-
-        /// <summary>
-        ///     Enqueues an Action to execute in the <see cref="ThreadWorker" />.
-        /// </summary>
-        /// <param name="action">The Action to execute</param>
-        /// <exception cref="ObjectDisposedException"></exception>
-        public void Post(Action action)
+        catch (OperationCanceledException)
         {
-            if (this.disposed)
-            {
-                throw new ObjectDisposedException(nameof(ThreadWorker));
-            }
-
-            this.actions.Add(action);
+            // Ignore Exceptions from this.actions.Take()
         }
+    }
 
-        private void Execute()
+    private void ExecuteAction(Action action)
+    {
+        try
         {
-            CancellationToken token = this.cts.Token;
-
-            try
-            {
-                while (this.actions.Any() || !token.IsCancellationRequested)
-                {
-                    Action action = this.actions.Take(token);
-
-                    this.ExecuteAction(action);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                // Ignore Exceptions from this.actions.Take()
-            }
+            action();
         }
+        catch (Exception exception)
+        {
+            this.exceptionHandler(exception);
+        }
+    }
 
-        private void ExecuteAction(Action action)
+    public void Send(Action action)
+    {
+        using ManualResetEvent mre = new ManualResetEvent(false);
+        this.actions.Add(() =>
         {
             try
             {
                 action();
             }
-            catch (Exception exception)
+            finally
             {
-                this.exceptionHandler(exception);
+                mre.Set();
             }
-        }
+        });
 
-        public void Send(Action action)
-        {
-            using ManualResetEvent mre = new ManualResetEvent(false);
-            this.actions.Add(() =>
-            {
-                try
-                {
-                    action();
-                }
-                finally
-                {
-                    mre.Set();
-                }
-            });
-
-            mre.WaitOne();
-        }
+        mre.WaitOne();
     }
 }
