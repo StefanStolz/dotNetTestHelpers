@@ -91,7 +91,7 @@ internal sealed class ThreadWorker : IDisposable
         {
             try
             {
-                action();
+                this.ExecuteAction(action);
             }
             finally
             {
