@@ -1,0 +1,43 @@
+name: Build main-branch
+
+on:
+  push:
+    branches: [ main ]  # oder dein Branchname
+  workflow_dispatch:    # erlaubt manuelles Ausführen
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'  # oder deine Version
+
+    - name: Restore dependencies
+      run: dotnet restore ./src/dotNetTestHelpers.sln 
+
+    - name: Set version variable
+      run: echo "VERSIONPREFIX=0.0.${{ github.run_number }}" >> $GITHUB_ENV
+
+    - name: Build
+      run: dotnet build ./src/dotNetTestHelpers.sln --configuration Release
+
+    - name: Test
+      run: dotnet test ./src/dotNetTestHelpers.sln --configuration Release
+
+    - name: Pack
+      run: dotnet pack ./src/dotNetTestHelpers/TestHelpers.csproj -o ./publish --no-restore
+
+    # - name: Push to NuGet
+    #   run: dotnet nuget push ./publish/*.nupkg --api-key ${{ secrets.NUGETAPIKEY }} --source https://api.nuget.org/v3/index.json
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: TestHelpers-${{ github.run_number }}
+        path: ./publish
