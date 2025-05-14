@@ -33,7 +33,7 @@ jobs:
       run: dotnet test ./src/dotNetTestHelpers.sln --configuration Release
 
     - name: Pack
-      run: dotnet pack ./src/dotNetTestHelpers/TestHelpers.csproj -o ./publish --no-restore
+      run: dotnet pack ./src/TestHelpers/TestHelpers.csproj -o ./publish --no-restore
 
     # - name: Push to NuGet
     #   run: dotnet nuget push ./publish/*.nupkg --api-key ${{ secrets.NUGETAPIKEY }} --source https://api.nuget.org/v3/index.json
