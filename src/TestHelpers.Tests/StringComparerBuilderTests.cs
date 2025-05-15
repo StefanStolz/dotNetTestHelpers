@@ -32,4 +32,18 @@ public class StringComparerBuilderTests
 
         result.Should().BeTrue();
     }
+
+
+    [Test]
+    public void TrimLinesWithDifferentLineEndings()
+    {
+        var input1 = "  one\ntwo  ";
+        var input2 = "one\r\ntwo";
+
+        var sut = new StringComparerBuilder().TrimLines().Build();
+
+        var result = sut.Equals(input1, input2);
+
+        result.Should().BeFalse();
+    }
 }
