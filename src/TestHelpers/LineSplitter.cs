@@ -2,16 +2,22 @@ using System.Text;
 
 namespace StefanStolz.TestHelpers;
 
-internal static class LineSplitter
+internal class LineSplitter
 {
-    public static LineSplitterResult Execute(string input)
+    private readonly LineEnding lineEnding;
+
+    public LineSplitter(LineEnding lineEnding)
+    {
+        this.lineEnding = lineEnding;
+    }
+
+    public LineSplitterResult Execute(string input)
     {
         return new LineSplitterResult(Enumerate(input));
     }
 
-    private static IEnumerable<LineSplitterItem> Enumerate(string input)
+    private IEnumerable<LineSplitterItem> Enumerate(string input)
     {
-        LineSplitterKind? currentKind = null;
         var queue = new Queue<char>(input);
 
         var resultBuilder = new StringBuilder();
@@ -19,37 +25,41 @@ internal static class LineSplitter
         while (queue.Count > 0)
         {
             var previewChar = queue.Peek();
-            LineSplitterKind charKind =
-                IsLineEndingCharacter(previewChar) ? LineSplitterKind.LineEnding : LineSplitterKind.Text;
 
-            if (currentKind.HasValue)
+            if (this.lineEnding.IsStartCharacter(previewChar))
             {
-                if (currentKind.Value == charKind)
+                if (resultBuilder.Length > 0)
                 {
-                    resultBuilder.Append(queue.Dequeue());
-                }
-                else
-                {
-                    yield return new LineSplitterItem(resultBuilder.ToString(), currentKind.Value);
+                    yield return new LineSplitterItem(resultBuilder.ToString(), LineSplitterKind.Text);
                     resultBuilder.Clear();
-                    currentKind = null;
                 }
+
+                resultBuilder.Append(queue.Dequeue());
+                while (!this.lineEnding.IsComplete(resultBuilder.ToString()))
+                {
+                    previewChar = queue.Peek();
+                    if (this.lineEnding.IsValidNextChar(previewChar, resultBuilder.ToString()))
+                    {
+                        resultBuilder.Append(queue.Dequeue());
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Invalid line ending");
+                    }
+                }
+
+                yield return new LineSplitterItem(resultBuilder.ToString(), LineSplitterKind.LineEnding);
+                resultBuilder.Clear();
             }
             else
             {
-                currentKind = charKind;
                 resultBuilder.Append(queue.Dequeue());
             }
         }
 
-        if (currentKind.HasValue)
+        if (resultBuilder.Length > 0)
         {
-            yield return new LineSplitterItem(resultBuilder.ToString(), currentKind.Value);
+            yield return new LineSplitterItem(resultBuilder.ToString(), LineSplitterKind.Text);
         }
-    }
-
-    private static bool IsLineEndingCharacter(char c)
-    {
-        return c is '\r' or '\n';
     }
 }

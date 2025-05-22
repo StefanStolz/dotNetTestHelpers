@@ -38,7 +38,20 @@ public sealed class StringComparerBuilder
     {
         public string Preprocess(string input)
         {
-            var parts = LineSplitter.Execute(input);
+            var detectLineEndings = new DetectLineEnding();
+
+            var le = detectLineEndings.DetectFromString(input);
+
+            var lineEnding = le switch
+            {
+                LineEndingKind.Windows => LineEnding.Windows,
+                LineEndingKind.Unix => LineEnding.Unix,
+                LineEndingKind.Mac => LineEnding.Mac,
+                _=> LineEnding.FromEnvironment()
+            };
+
+            var lineSplitter = new LineSplitter(lineEnding);
+            var parts = lineSplitter.Execute(input);
             var transformed = parts.TransformTextItems(t=>t.Trim());
             return transformed.ToString();
         }
